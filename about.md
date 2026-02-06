@@ -13,8 +13,8 @@ Write a brief introduction about yourself here. Include:
 
 ## Education
 
-- **[Your Degree]** - [University Name], [Year]
-- **Relevant Coursework**: Statistics, Data Analysis, Programming, etc.
+- **[Your Degree]** - Computer Science & Statistics, 2026
+- **Relevant Coursework**: CS 340, CS 312, STAT 330, STAT 340, etc 
 
 ## Skills & Interests
 
