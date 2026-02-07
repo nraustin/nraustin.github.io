@@ -4,42 +4,49 @@
     "href": "about.html",
     "title": "About Me",
     "section": "",
-    "text": "Write a brief introduction about yourself here. Include:\n\nYour academic background\nYour interest in data science\nYour career goals\nAny relevant experience or projects"
+    "text": "(images/nick-byu.jpg)"
   },
   {
     "objectID": "about.html#background",
     "href": "about.html#background",
     "title": "About Me",
-    "section": "",
-    "text": "Write a brief introduction about yourself here. Include:\n\nYour academic background\nYour interest in data science\nYour career goals\nAny relevant experience or projects"
+    "section": "Background",
+    "text": "Background\nWelcome! I’m currently a senior at Brigham Young University studying Statistics and Computer Science. My obsession with analyzing how complex processess and relationships in the mathemetical sciences explain our world eventually drew me to study relevant metholodogies whose principles can be programmed, optimized, and scaled. I’ve enjoyed leveraging this knowledge to engineer solutions in accessibility, education, healthcare, marketing, and economics. My passion for continual learning enhances this expertise, and opportunities to make meaningful contributions in these areas and others always excites me."
   },
   {
     "objectID": "about.html#education",
     "href": "about.html#education",
     "title": "About Me",
     "section": "Education",
-    "text": "Education\n\n[Your Degree] - Computer Science & Statistics, 2026\nRelevant Coursework: CS 340, CS 312, STAT 330, STAT 340, etc"
+    "text": "Education\n\nBrigham Young University\n\nB.S. in Statistics & Computer Science — 2026\n\nMinor: Mathematics\n\n\nRelevant Coursework: Probability & Inference 2, Software Design, Statistical Modeling 2, Algorithm Design & Analysis, Machine Learning Operations (MLOps), Advanced Software Construction, Multivariable Calculus, Mathematics of Data Science"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "About Me",
+    "section": "Experience",
+    "text": "Experience\n\nProfessional Work\n\nResearch Assitant - Record Linking Lab\n\nDesigned and implemented a scalable microservice in Python using AWS server technology, automating relevant data indexing and facilitating record linking processes.\nDevised a hierarchical clustering machine learning model for enhanced identification of duplicate data, reducing record preprocessing time and improving data accuracy\nEngaged in cross-functional collaboration to orchestrate planning, development, and integration of actionable items.\n\nQA & Automation Intern - Illuminating Software\n\nFormulated and integrated automated test scripts with C# and Selenium, enhancing performance and functionality testing under test-driven development principles, facilitating error detection by 35%.\nConducted comprehensive manual and automated QA analysis to ensure reliable and robustness prior to deployment.\nDiagnosed and resolved critical technical issues within the development codebase, contributing to the development of new testing utilities.\n\n\n\n\nProjects\n\nGenerative ASL\n\nAn ongoing project to help make web content more accessible to the ASL communinity. The process has consisted of architecting a cloud pipeline that receives text transcriptions as input data and converts the transcriptions to ASL gloss. The gloss generations are then mapped to avatar pose estimations to create a 3D avatar that performs ASL overlaid onto the original video or audio content.\n\nAnnual U.S. Healthcare cost anaylsis\n\nAn in-depth analysis of U.S. Healthcare costs across households using survey panel data in an effort to discover important factors"
   },
   {
     "objectID": "about.html#skills-interests",
     "href": "about.html#skills-interests",
     "title": "About Me",
     "section": "Skills & Interests",
-    "text": "Skills & Interests\n\nTechnical Skills\n\nProgramming: Python\nData Analysis: Pandas, NumPy\nVisualization: Matplotlib, Seaborn\nMachine Learning: Scikit-learn\nTools: Jupyter Notebooks, Git/GitHub\n\n\n\nAreas of Interest\n\n[Your specific interests, e.g., environmental data, healthcare analytics, finance, etc.]\n[Other areas you’re curious about]"
+    "text": "Skills & Interests\n\nTechnical Skills\n\nProgramming: C#, C++, Python, Java, TypeScript, R\nData Analysis: Pandas, NumPy\nVisualization: Matplotlib, Seaborn, GGPlot2\nMachine Learning: Scikit-learn\nDeep Learning: Tensorflow, PyTorch\nTools: Jupyter, AWS, GCP\n\n\n\nAreas of Interest\n\nEconomic sector & industry performance\nFinancial fraud detection\nU.S. Healthcare expenditures\nCloud computing\nElectrocardiology research"
   },
   {
-    "objectID": "about.html#goals",
-    "href": "about.html#goals",
+    "objectID": "about.html#get-to-know-me",
+    "href": "about.html#get-to-know-me",
     "title": "About Me",
-    "section": "Goals",
-    "text": "Goals\nDescribe what you hope to achieve through your data science journey:\n\nShort-term learning objectives\nLong-term career aspirations\nTypes of problems you want to solve"
+    "section": "Get to know me",
+    "text": "Get to know me\n\nIn my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I am always fascinated by the"
   },
   {
     "objectID": "about.html#contact",
     "href": "about.html#contact",
     "title": "About Me",
     "section": "Contact",
-    "text": "Contact\n\nEmail: your.email@example.com\nGitHub: github.com/your-username\nLinkedIn: linkedin.com/in/your-profile\n\n\nThis portfolio showcases my learning progress and projects completed during my data science studies."
+    "text": "Contact\n\nEmail: nickademic@gmail.com\nGitHub: github.com/nraustin\nLinkedIn: linkedin.com/in/nick-austin-bb4b23234"
   },
   {
     "objectID": "projects/final-project.html",
