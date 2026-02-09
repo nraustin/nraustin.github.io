@@ -2,8 +2,6 @@
 title: "About Me"
 ---
 
-(images/nick-byu.jpg)
-
 ## Background
 
 Welcome! I'm currently a senior at Brigham Young University studying Statistics and Computer Science.
