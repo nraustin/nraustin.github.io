@@ -38,8 +38,8 @@ and economics. My passion for continual learning enhances this expertise, and  o
     to create a 3D avatar that performs ASL overlaid onto the original video or audio content.
 
 - ## Annual U.S. Healthcare cost anaylsis
-    - An in-depth analysis of U.S. Healthcare costs across households
-    using survey panel data in an effort to discover important factors 
+    - An in-depth analysis of U.S. healthcare costs across households
+    using survey panel data. Multiple linear regression methods were employed using R to identify meaningful relationships for increased healthcare costs. 
 
 
 ## Skills & Interests
@@ -55,13 +55,12 @@ and economics. My passion for continual learning enhances this expertise, and  o
 ### Areas of Interest
 - Economic sector & industry performance
 - Financial fraud detection
-- U.S. Healthcare expenditures
+- U.S. healthcare expenditures
 - Cloud computing 
 - Electrocardiology research
 
 ## Get to know me
-- In my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I am always fascinated by the 
-
+- In my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I prefer taking leisure by traveling.
 
 ## Contact
 
