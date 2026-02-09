@@ -91,6 +91,21 @@
   margin-top: 0.5rem;
 }
 
+/* Profile image helper */
+.profile-img-wrapper {
+  text-align: center; 
+  margin: 1.5rem 0;
+}
+
+.profile-img {
+  width: 250px;
+  max-width: 60%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  display: inline-block;
+}
+
 /* Tables */
 .table {
   margin: 1.5rem 0;

@@ -2,6 +2,10 @@
 title: "About Me"
 ---
 
+::: {.profile-img-wrapper}
+![](images/me.jpg){.profile-img width="250px"}
+:::
+
 ## Background
 
 Welcome! I'm currently a senior at Brigham Young University studying Statistics and Computer Science.
