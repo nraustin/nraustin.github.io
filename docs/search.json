@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About Me",
-    "section": "",
-    "text": "Photo of me"
-  },
-  {
     "objectID": "about.html#background",
     "href": "about.html#background",
     "title": "About Me",
@@ -39,7 +32,7 @@
     "href": "about.html#get-to-know-me",
     "title": "About Me",
     "section": "Get to know me",
-    "text": "Get to know me\n\nIn my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I prefer taking leisure by traveling."
+    "text": "Get to know me\n\nIn my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I also love to travel."
   },
   {
     "objectID": "about.html#contact",

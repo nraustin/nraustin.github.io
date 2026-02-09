@@ -3,7 +3,7 @@ title: "About Me"
 ---
 
 ::: {.profile-img-wrapper}
-![](images/me.jpg){.profile-img width="250px"}
+![](images/me.jpg "Photo of me"){fig-alt="Photo of me" .profile-img}
 :::
 
 ## Background
@@ -64,7 +64,7 @@ and economics. My passion for continual learning enhances this expertise, and  o
 - Electrocardiology research
 
 ## Get to know me
-- In my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I prefer taking leisure by traveling.
+- In my spare time, I enjoy everything the outdoors has to offer, particularly fishing, hiking, and running. When finances permit, I also love to travel. 
 
 ## Contact
 
