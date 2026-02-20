@@ -42,13 +42,13 @@
     "text": "Contact\n\nEmail: nickademic@gmail.com\nGitHub: github.com/nraustin\nLinkedIn: linkedin.com/in/nick-austin-bb4b23234"
   },
   {
-    "objectID": "projects/final-project.html",
-    "href": "projects/final-project.html",
-    "title": "Final Project",
+    "objectID": "projects/eda.html",
+    "href": "projects/eda.html",
+    "title": "EDA Project",
     "section": "",
     "text": "This is coming down the pipeline. Check again later.",
     "crumbs": [
-      "Final Project"
+      "EDA Project"
     ]
   },
   {
@@ -62,13 +62,13 @@
     ]
   },
   {
-    "objectID": "projects/eda.html",
-    "href": "projects/eda.html",
-    "title": "EDA Project",
+    "objectID": "projects/final-project.html",
+    "href": "projects/final-project.html",
+    "title": "Final Project",
     "section": "",
     "text": "This is coming down the pipeline. Check again later.",
     "crumbs": [
-      "EDA Project"
+      "Final Project"
     ]
   },
   {

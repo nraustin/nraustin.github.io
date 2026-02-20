@@ -24,6 +24,8 @@ website:
             href: projects/data-acquisition.qmd
           - text: "Final Project"
             href: projects/final-project.qmd
+      - text: "Blog"
+        href: blog.md
     right:
       - icon: github
         href: https://github.com/nraustin
