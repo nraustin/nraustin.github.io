@@ -104,6 +104,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -184,8 +213,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#email-spam-filtering-in-r-with-logistic-regression-and-maximum-likelihood-estimation-mle" id="toc-email-spam-filtering-in-r-with-logistic-regression-and-maximum-likelihood-estimation-mle" class="nav-link active" data-scroll-target="#email-spam-filtering-in-r-with-logistic-regression-and-maximum-likelihood-estimation-mle">Email Spam Filtering in R with Logistic Regression and Maximum Likelihood Estimation (MLE)</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-math-behind-classifying-spam-or-ham" id="toc-the-math-behind-classifying-spam-or-ham" class="nav-link" data-scroll-target="#the-math-behind-classifying-spam-or-ham">The math behind classifying spam or ham</a></li>
+  <li><a href="#mini-r-implementation" id="toc-mini-r-implementation" class="nav-link" data-scroll-target="#mini-r-implementation">Mini R Implementation</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -209,10 +250,150 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="email-spam-filtering-in-r-with-logistic-regression-and-maximum-likelihood-estimation-mle" class="level2">
+<h2 class="anchored" data-anchor-id="email-spam-filtering-in-r-with-logistic-regression-and-maximum-likelihood-estimation-mle">Email Spam Filtering in R with Logistic Regression and Maximum Likelihood Estimation (MLE)</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>Spam is a significant cybersecurity threat that targets a user’s personal information, and, of course, is also a major nuisance. Email spam filtering is a prevalent binary classification problem, since emails can be discretized into a spam type or an ordinary email. A quality spam filter helps users focus on legitimate messages and limits exposure to scams. Today, many companies employ deep learning techniques for advanced filtering, but for the purposes of simplicity, I’ll stick to the statistical fundamentals in this guide.</p>
+<p>In this tutorial, you’ll learn the mathematical intuition behind this type of problem, build a simple spam classifier in R, connect the model directly to MLE, and analyze and interpret results.</p>
+</section>
+<section id="the-math-behind-classifying-spam-or-ham" class="level3">
+<h3 class="anchored" data-anchor-id="the-math-behind-classifying-spam-or-ham">The math behind classifying spam or ham</h3>
+<p>In linear regression, a set of features predicts a continous value, such as future income or healthcare costs. This is often calculated by means of Ordinary Least Squares (OLS). For problems requring discrete outcomes, this approach will not work. Using the sigmoid (logistic) function, we can remedy this.</p>
+<section id="derivation-1-logistic-regression" class="level4">
+<h4 class="anchored" data-anchor-id="derivation-1-logistic-regression"><strong>Derivation 1: Logistic Regression</strong></h4>
+<p>First, define the random variable <span class="math inline">\(Y\)</span> as an indicator for spam or not where <span class="math inline">\(Y \in \{0,1\}\)</span>.</p>
+<p>Then, define <span class="math inline">\(p\)</span> as the probability the email is spam for observation <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[p_i = P(Y_i = 1 \mid \mathbf{x}_i)\]</span></p>
+<p>Now define the log-odds (the logit) by</p>
+<p><span class="math display">\[\operatorname{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik}.\]</span></p>
+<p>These quantities are the input to the sigmoid function. Because logits can take any real value, we map them back to noramlized probabilities between 0 and 1 using this function:</p>
+<p><span class="math display">\[p_i = \sigma(x) = \frac{1}{1 + e^{-x}}.\]</span></p>
+<div class="figure profile-img-wrapper">
+<p><img src="images/sigmoid_graph.png" class="img-fluid" style="width:60.0%" data-fig-cap="The logistic (sigmoid) function maps logits to probabilities." alt="Sigmoid function"></p>
+<p><em>Figure: The sigmoid curve — maps real-valued logits to probabilities in (0,1).</em></p>
+</div>
+<p>This function then assigns a probability to an event, which in our case, is an email.</p>
+<p><span class="math inline">\({x_i}, \ldots, {x_n}\)</span> represent the features or predictors that contain information used to optimize <span class="math inline">\(\beta_0, \ldots, \beta_k\)</span>, as explained in the next step. Example features (and sample values) are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 30%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Description</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(x_1\)</span> — Keyword Frequency</td>
+<td>Fraction of words matching common spam keywords, like “$$$”, “free”, “winner”, “bonus”, etc</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(x_2\)</span> — Link Count</td>
+<td>Number of external hyperlinks in the message body</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(x_3\)</span> — Sender Reputation</td>
+<td>Domain reputation score (0 = low trust, 100 = high trust)</td>
+<td style="text-align: right;">40</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="derivation-2-maximum-likelihood-estimation-mle" class="level4">
+<h4 class="anchored" data-anchor-id="derivation-2-maximum-likelihood-estimation-mle"><strong>Derivation 2: Maximum Likelihood Estimation (MLE)</strong></h4>
+<p>As mentioned earlier, OLS methods are incompatible for classification problems. Instead, we must maximize the <strong>likelihoods</strong>. That is, we calculate the coefficients <span class="math inline">\(\beta_0, ..., \beta_k\)</span> that maximize the likelihood of correctly identifying the observed data (Note: in various places these are also referred to as weights). For an email event, the distribution is Bernoulli:</p>
+<p><span class="math display">\[P(y|x) = p^y(1-p)^{1-y}\]</span></p>
+<p>Across all data points, we multiply these probabilities together to get the Likelihood Function: <span class="math display">\[\mathcal{L}(\beta | {x}) = \prod_{i=1}^{n} p_i^{y_i}(1-p_i)^{1-y_i}\]</span></p>
+<p>To remove computational overhead and reduce risk of <a href="https://en.wikipedia.org/wiki/Arithmetic_underflow">underflow</a>, we take the Log-Likelihood to instead sum the components:</p>
+<p><span class="math display">\[\ell(\beta) = \sum_{i=1}^{n} [y_i \log(p_i) + (1-y_i) \log(1-p_i)]\]</span></p>
+<p>By maximizing this function, the algorithm finds the optimal <span class="math inline">\(\beta\)</span> values. Ultimately, our objective is:</p>
+<p><span class="math display">\[\hat{\beta} = \arg\max_{\beta} \; \ell(\beta) = \arg\max_{\beta} \; \sum_{i=1}^n \left[ y_i\log(p_i) + (1-y_i)\log(1-p_i) \right]\]</span></p>
+</section>
+</section>
+<section id="mini-r-implementation" class="level3">
+<h3 class="anchored" data-anchor-id="mini-r-implementation">Mini R Implementation</h3>
+<section id="step-1-load-data" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-load-data"><strong>Step 1: Load data</strong></h4>
+<p>For this example, I’ll be using the kernlab package in R. Inside, it contains a dataset named Spam with over 4600 emails and 57 features for keyword and character frequencies.</p>
+<p>First, install the kernlab package to access the spam dataset.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"kernlab"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(spam)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s take a look at three of the features: <em>charDollar</em>, <em>free</em>, and <em>charExclamation</em>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(spam[, <span class="fu">c</span>(<span class="st">"charDollar"</span>, <span class="st">"free"</span>, <span class="st">"charExclamation"</span>, <span class="st">"type"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="figure">
+<p><img src="images/variable_examples_R.png" class="img-fluid" style="width:70.0%" data-fig-cap="Example dataset rows showing feature values and labels." alt="Example rows from the spam dataset"></p>
+<p><em>Example output: a few email instances labeled as spam with their feature counts.</em></p>
+</div>
+<p>The output shows a few email instances labeled as spam and their respective word/character frequencies.</p>
+</section>
+<section id="step-2-fit-glm-model" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-fit-glm-model"><strong>Step 2: Fit GLM model</strong></h4>
+<p>Now, using the built-in glm function in R, we can fit a model to these three selected variables.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(type <span class="sc">~</span> charDollar <span class="sc">+</span> free <span class="sc">+</span> charExclamation, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> spam, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">family =</span> binomial)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Under the hood, R is using a generalization of linear regression to create approximations for MLE using a link function, since there is not a closed form solution (the problem can’t be solved completely with a finite number of steps) for logistic regression. The exact details are extraneous for this tutorial, but it’s important to observe that in this case, the link function is specified by the argument <code>family = binomial</code>.</p>
+</section>
+<section id="step-3-interpret-results-and-test" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-interpret-results-and-test"><strong>Step 3: Interpret results and test</strong></h4>
+<p>Let’s take a look at the model output.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="figure">
+<p><img src="images/summary_table.png" class="img-fluid" style="width:80.0%" data-fig-cap="GLM summary output from R showing coefficients, standard errors, and significance." alt="GLM summary table"></p>
+<p><em>Summary table: coefficients and diagnostics from the model.</em></p>
+</div>
+<p>The summary table suggests that the features used in our model, <em>charDollar</em>, <em>free</em>, and <em>charExclamation</em>, are all statistically significant predictors for spam. Interestingly, the coefficient estimate, or change in log odds for <em>charDollar</em> is quite large relative to the other features. At the bottom, the number of Fisher Scoring iterations is 7, which tells us how many updates the model made before improvement ceased.</p>
+<p>We can test how well the model fares against a sample email where <em>charDollar</em> appears 0.5 percent of the time, and <em>charExclamation</em> and <em>free</em> appear 1 percent of the time.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>test_email <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">charDollar =</span> <span class="fl">0.5</span>, <span class="at">charExclamation =</span> <span class="fl">1.0</span>, <span class="at">free =</span> <span class="fl">1.0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, test_email, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>prob</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="figure">
+<p><img src="images/prob_output_R.png" class="img-fluid" style="width:40.0%" data-fig-cap="Predicted probability for a sample test email (using predict with type='response')." alt="Predicted probability output"></p>
+<p><em>Predicted probability output (~99% chance of spam).</em></p>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>Maximum Likelihood Estimation is what allows spam filters to calculate probabilities that respects the binary nature of the data. The mathematical shift from minimizing error to maximizing likelihood delivers a statistically valid model capable of handling more than just spam filtering. I’ve used similar models for credit card fraud detection, customer churn prediction, and ecological forecasting. These are but a few of the vast applications possible.</p>
+<p>Now, using this tutorial, you can apply these steps to your workflow:</p>
+<ol type="1">
+<li>Identify the binary problem and collect data
+<ul>
+<li>Define the class outcomes. Clean and prepare the data with relevant features.</li>
+</ul></li>
+<li>Fit and evaluate a logistic model (MLE)
+<ul>
+<li>Fit with <code>glm(..., family = binomial)</code> in R, inspect coefficients and statistical significance, and evaluate using performance metrics such as ROC/AUC, precision/recall, or AIC/BIC.</li>
+</ul></li>
+<li>Refine and revaluate
+<ul>
+<li>Refine features, feature engineer new ones, and validate against test examples.</li>
+</ul></li>
+</ol>
+<section id="learning-resources" class="level4">
+<h4 class="anchored" data-anchor-id="learning-resources"><strong>Learning Resources</strong></h4>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression — Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">Maximum likelihood estimation — Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Generalized_linear_model">Generalized linear model — Wikipedia</a></li>
+</ul>
 
 
 <!-- -->
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -666,9 +847,182 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Tutorial Blog"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Tutorial Blog"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Email Spam Filtering in R with Logistic Regression and Maximum Likelihood Estimation (MLE) </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>Spam is a significant cybersecurity threat that targets a user's personal information, and, of course, is also a major nuisance. Email spam filtering is a prevalent binary classification problem, since emails can be discretized into a spam type or an ordinary email.  A quality spam filter helps users focus on legitimate messages and limits exposure to scams. Today, many companies employ deep learning techniques for advanced filtering, but for the purposes of simplicity, I'll stick to the statistical fundamentals in this guide.</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>In this tutorial, you’ll learn the mathematical intuition behind this type of problem, build a simple spam classifier in R, connect the model directly to MLE, and analyze and interpret results.</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">### The math behind classifying spam or ham</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>In linear regression, a set of features predicts a continous value, such as future income or healthcare costs. This is often calculated by means of Ordinary Least Squares (OLS). For problems requring discrete outcomes, this approach will not work. Using the sigmoid (logistic) function, we can remedy this. </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Derivation 1: Logistic Regression**</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>First, define the random variable $Y$ as an indicator for spam or not where $Y \in <span class="sc">\{</span>0,1<span class="sc">\}</span>$.</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>Then, define $p$ as the probability the email is spam for observation $i$:</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>$$p_i = P(Y_i = 1 \mid \mathbf{x}_i)$$</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>Now define the log-odds (the logit) by</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>$$\operatorname{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik}.$$ </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>These quantities are the input to the sigmoid function. Because logits can take any real value, we map them back to noramlized probabilities between 0 and 1 using this function:</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>$$p_i = \sigma(x) = \frac{1}{1 + e^{-x}}.$$ </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>::: {.figure .profile-img-wrapper}</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/sigmoid_graph.png)</span>{fig-alt="Sigmoid function" fig-cap="The logistic (sigmoid) function maps logits to probabilities." width="60%"}</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>*Figure: The sigmoid curve — maps real-valued logits to probabilities in (0,1).* </span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>This function then assigns a probability to an event, which in our case, is an email.</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>${x_i}, \ldots, {x_n}$ represent the features or predictors that contain information used to optimize</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>$\beta_0, \ldots, \beta_k$, as explained in the next step. Example features (and sample values) are:</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Feature <span class="pp">|</span> Description <span class="pp">|</span> Value <span class="pp">|</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---:|</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $x_1$ — Keyword Frequency <span class="pp">|</span> Fraction of words matching common spam keywords, like "$$$", "free", "winner", "bonus", etc <span class="pp">|</span> 0.33 <span class="pp">|</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $x_2$ — Link Count <span class="pp">|</span> Number of external hyperlinks in the message body <span class="pp">|</span> 5 <span class="pp">|</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $x_3$ — Sender Reputation <span class="pp">|</span> Domain reputation score (0 = low trust, 100 = high trust) <span class="pp">|</span> 40 <span class="pp">|</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Derivation 2: Maximum Likelihood Estimation (MLE)**</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>As mentioned earlier, OLS methods are incompatible for classification problems. Instead, </span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>we must maximize the **likelihoods**. That is, we calculate the coefficients $\beta_0, ..., \beta_k$ that maximize the likelihood of correctly identifying the observed data (Note: in various places these are also referred to as weights). For an email event, the distribution is Bernoulli: </span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>$$P(y|x) = p^y(1-p)^{1-y}$$</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>Across all data points, we multiply these probabilities together to get the Likelihood Function:</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>$$\mathcal{L}(\beta | {x}) = \prod_{i=1}^{n} p_i^{y_i}(1-p_i)^{1-y_i}$$</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>To remove computational overhead and reduce risk of <span class="co">[</span><span class="ot">underflow</span><span class="co">](https://en.wikipedia.org/wiki/Arithmetic_underflow)</span>, we take the Log-Likelihood to instead sum the components:</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>$$\ell(\beta) = \sum_{i=1}^{n} <span class="co">[</span><span class="ot">y_i \log(p_i) + (1-y_i) \log(1-p_i)</span><span class="co">]</span>$$</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>By maximizing this function, the algorithm finds the optimal $\beta$ values. Ultimately, our objective is:</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>$$\hat{\beta} = \arg\max_{\beta} \; \ell(\beta) = \arg\max_{\beta} \; \sum_{i=1}^n \left<span class="co">[</span><span class="ot"> y_i\log(p_i) + (1-y_i)\log(1-p_i) \right</span><span class="co">]</span>$$</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="fu">### Mini R Implementation</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Step 1: Load data**</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>For this example, I'll be using the kernlab package in R. Inside, it contains a dataset named Spam with over 4600 emails and 57 features for keyword and character frequencies.</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>First, install the kernlab package to access the spam dataset.</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"kernlab"</span>)</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(spam)</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>Let's take a look at three of the features: *charDollar*, *free*, and *charExclamation*.</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(spam[, <span class="fu">c</span>(<span class="st">"charDollar"</span>, <span class="st">"free"</span>, <span class="st">"charExclamation"</span>, <span class="st">"type"</span>)])</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>::: {.figure}</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/variable_examples_R.png)</span>{fig-alt="Example rows from the spam dataset" fig-cap="Example dataset rows showing feature values and labels." width="70%"}</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>*Example output: a few email instances labeled as spam with their feature counts.*</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>The output shows a few email instances labeled as spam and their respective word/character frequencies.</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Step 2: Fit GLM model**</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>Now, using the built-in glm function in R, we can fit a model to these three selected variables.</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(type <span class="sc">~</span> charDollar <span class="sc">+</span> free <span class="sc">+</span> charExclamation, </span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> spam, </span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>             <span class="at">family =</span> binomial)</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>Under the hood, R is using a generalization of linear regression to create approximations for MLE using a link function, since there is not a closed form solution (the problem can't be solved completely with a finite number of steps) for logistic regression. The exact details are extraneous for this tutorial, but it's important to observe that in this case, the link function is specified by the argument <span class="in">`family = binomial`</span>.</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Step 3: Interpret results and test**</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>Let's take a look at the model output.</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>::: {.figure}</span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/summary_table.png)</span>{fig-alt="GLM summary table" fig-cap="GLM summary output from R showing coefficients, standard errors, and significance." width="80%"}</span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>*Summary table: coefficients and diagnostics from the model.* </span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>The summary table suggests that the features used in our model, *charDollar*, *free*, and *charExclamation*, are all statistically significant predictors for spam. Interestingly,</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>the coefficient estimate, or change in log odds for *charDollar* is quite large relative to the other features. At the bottom, the number of Fisher Scoring iterations is 7, which tells us how many updates the model made before improvement ceased.</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>We can test how well the model fares against a sample email where *charDollar* appears 0.5 percent of the time, and *charExclamation* and *free* appear 1 percent of the time.</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>test_email <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">charDollar =</span> <span class="fl">0.5</span>, <span class="at">charExclamation =</span> <span class="fl">1.0</span>, <span class="at">free =</span> <span class="fl">1.0</span>)</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, test_email, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>prob</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>::: {.figure}</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/prob_output_R.png)</span>{fig-alt="Predicted probability output" fig-cap="Predicted probability for a sample test email (using predict with type='response')." width="40%"}</span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>*Predicted probability output (~99% chance of spam).*</span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### Conclusion</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>Maximum Likelihood Estimation is what allows spam filters to calculate probabilities that respects the binary nature of the data. The mathematical shift from minimizing error to maximizing likelihood delivers a statistically valid model capable of handling more than just spam filtering. I've used similar models for credit card fraud detection, customer churn prediction, and ecological forecasting. These are but a few of the vast applications possible.</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>Now, using this tutorial, you can apply these steps to your workflow:</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Identify the binary problem and collect data</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>Define the class outcomes. Clean and prepare the data with relevant features.</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit and evaluate a logistic model (MLE)</span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>Fit with <span class="in">`glm(..., family = binomial)`</span> in R, inspect coefficients and statistical significance, and evaluate using performance metrics such as ROC/AUC, precision/recall,</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>   or AIC/BIC.</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Refine and revaluate</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>Refine features, feature engineer new ones, and validate against test examples. </span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Learning Resources**</span></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Logistic regression — Wikipedia</span><span class="co">](https://en.wikipedia.org/wiki/Logistic_regression)</span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Maximum likelihood estimation — Wikipedia</span><span class="co">](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation)</span></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Generalized linear model — Wikipedia</span><span class="co">](https://en.wikipedia.org/wiki/Generalized_linear_model)</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
