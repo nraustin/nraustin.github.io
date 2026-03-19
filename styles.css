@@ -152,6 +152,34 @@
   }
 }
 
+/* Make navbar dropdowns appear on hover for desktop devices */
+@media (hover: hover) and (pointer: fine) {
+  .navbar-nav .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0; /* prevent shifting */
+  }
+  .navbar-nav .dropdown > .dropdown-toggle::after {
+    /* removed default rotation */
+    transform: rotate(0deg);
+  }
+}
+/* rotate caret when hovered or focused */
+@media (hover: hover) and (pointer: fine) {
+  .navbar-nav .dropdown:hover > .dropdown-toggle::after,
+  .navbar-nav .dropdown:focus-within > .dropdown-toggle::after {
+    transform: rotate(180deg);
+  }
+}
+/* Also show dropdown when it or its children has focus (keyboard navigation) */
+.navbar-nav .dropdown:focus-within > .dropdown-menu {
+  display: block;
+}
+
+/* Ensure dropdown menus sit above other elements */
+.navbar .dropdown-menu {
+  z-index: 1200;
+}
+
 /* Print styles */
 @media print {
   .navbar, .footer {

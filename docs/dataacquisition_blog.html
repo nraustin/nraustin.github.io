@@ -139,7 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
         <li>
-    <a class="dropdown-item" href="./projects/index.md">
+    <a class="dropdown-item" href="./projects/index.html">
  <span class="dropdown-text">All Projects</span></a>
   </li>  
         <li><hr class="dropdown-divider"></li>
@@ -162,6 +162,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Blog</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-blog">    
+        <li>
+    <a class="dropdown-item" href="./blog/index.html">
+ <span class="dropdown-text">All Blog Posts</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
         <li>
     <a class="dropdown-item" href="./blog.html">
  <span class="dropdown-text">Tutorial Blog</span></a>
@@ -259,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-retrieval-process" class="level3">
 <h3 class="anchored" data-anchor-id="data-retrieval-process">Data Retrieval Process</h3>
 <p>For researchers looking to build similar economic datasets, the challenge is not just scraping for data but mapping abstract economic concepts to the specific series IDs required by the BLS API. The BLS API does not allow for simple queries such as “state = Florida, measure = wages”; instead, you must construct an exact 20-character identifier.</p>
-<p>Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server.</p>
+<p>Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server:</p>
 <p><code>https://download.bls.gov/pub/time.series/</code></p>
 <p>This remaining retrieval process followed four repeatable steps.</p>
 <section id="defining-the-taxonomy" class="level4">
@@ -403,8 +408,8 @@ One row per date, state, and supersector</li>
 <h2 class="anchored" data-anchor-id="code-and-further-information">Code and Further Information</h2>
 <p>The full Python code for this project, including metadata mapping, API query logic, and the final pivoting and cleaning script, is available in the GitHub repository below.</p>
 <ul>
-<li><strong>GitHub Repository:</strong> <code>https://github.com/nraustin/data-acquisition-stat386</code></li>
-<li><strong>BLS Public Data API V2 Documentation:</strong> <code>https://www.bls.gov/developers/api_signature_v2.htm</code></li>
+<li><strong>GitHub Repository:</strong> <a href="https://github.com/nraustin/data-acquisition-stat386">nraustin/data-acquisition-stat386</a></li>
+<li><strong>BLS Public Data API V2 Documentation:</strong> <a href="https://www.bls.gov/developers/api_signature_v2.htm">BLS API v2 docs</a></li>
 <li><strong>BLS Handbook of Methods:</strong> The official handbook for U.S. labor statistics. It provides the exact definitions for the <a href="https://www.bls.gov/opub/hom/ces/home.htm">Establishment Survey (Wages)</a> and the <a href="https://www.bls.gov/opub/hom/lau/home.htm">Household Survey (Unemployment)</a>.</li>
 <li><strong>FRED (Federal Reserve Economic Data):</strong> A tool for <a href="https://fred.stlouisfed.org/">visualizing historical context</a> and understanding the difference between “Real” (inflation-adjusted) and “Nominal” economic values.</li>
 <li><strong>Investopedia – Real Wage vs.&nbsp;Nominal Wage:</strong> A highly accessible breakdown of how <a href="https://www.investopedia.com/terms/r/realwage.asp">purchasing power</a> is calculated and why it matters for the average worker.</li>
@@ -896,7 +901,7 @@ One row per date, state, and supersector</li>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>For researchers looking to build similar economic datasets, the challenge is not just scraping for data but mapping abstract economic concepts to the specific series IDs required by the BLS API. The BLS API does not allow for simple queries such as "state = Florida, measure = wages"; instead, you must construct an exact 20-character identifier.</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server:</span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="in">`https://download.bls.gov/pub/time.series/`</span></span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
@@ -998,8 +1003,8 @@ One row per date, state, and supersector</li>
 <span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>The full Python code for this project, including metadata mapping, API query logic, and the final pivoting and cleaning script, is available in the GitHub repository below.</span>
 <span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GitHub Repository:** <span class="in">`https://github.com/nraustin/data-acquisition-stat386`</span></span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**BLS Public Data API V2 Documentation:** <span class="in">`https://www.bls.gov/developers/api_signature_v2.htm`</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GitHub Repository:** <span class="co">[</span><span class="ot">nraustin/data-acquisition-stat386</span><span class="co">](https://github.com/nraustin/data-acquisition-stat386)</span></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**BLS Public Data API V2 Documentation:** <span class="co">[</span><span class="ot">BLS API v2 docs</span><span class="co">](https://www.bls.gov/developers/api_signature_v2.htm)</span></span>
 <span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**BLS Handbook of Methods:** The official handbook for U.S. labor statistics. It provides the exact definitions for the <span class="co">[</span><span class="ot">Establishment Survey (Wages)</span><span class="co">](https://www.bls.gov/opub/hom/ces/home.htm)</span> and the <span class="co">[</span><span class="ot">Household Survey (Unemployment)</span><span class="co">](https://www.bls.gov/opub/hom/lau/home.htm)</span>.</span>
 <span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**FRED (Federal Reserve Economic Data):** A tool for <span class="co">[</span><span class="ot">visualizing historical context</span><span class="co">](https://fred.stlouisfed.org/)</span> and understanding the difference between "Real" (inflation-adjusted) and "Nominal" economic values.</span>
 <span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Investopedia – Real Wage vs. Nominal Wage:** A highly accessible breakdown of how <span class="co">[</span><span class="ot">purchasing power</span><span class="co">](https://www.investopedia.com/terms/r/realwage.asp)</span> is calculated and why it matters for the average worker.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>

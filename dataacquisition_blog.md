@@ -26,7 +26,7 @@ Key ethical considerations included:
 
 For researchers looking to build similar economic datasets, the challenge is not just scraping for data but mapping abstract economic concepts to the specific series IDs required by the BLS API. The BLS API does not allow for simple queries such as "state = Florida, measure = wages"; instead, you must construct an exact 20-character identifier.
 
-Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server.
+Highly specific code parameters for values such as state, period, and area are necessary to build these query strings. After some difficulty finding where these could be retrieved/scraped, I found a publicly available file resource on the BLS website contained files mapping the codes to their respective values. After specifying an identity through User-Agents, the mappings were loaded in directly from the server:
 
 `https://download.bls.gov/pub/time.series/`
 
@@ -128,8 +128,8 @@ The resulting data only contains industries representing supersectors, and does 
 
 The full Python code for this project, including metadata mapping, API query logic, and the final pivoting and cleaning script, is available in the GitHub repository below.
 
-- **GitHub Repository:** `https://github.com/nraustin/data-acquisition-stat386`
-- **BLS Public Data API V2 Documentation:** `https://www.bls.gov/developers/api_signature_v2.htm`
+- **GitHub Repository:** [nraustin/data-acquisition-stat386](https://github.com/nraustin/data-acquisition-stat386)
+- **BLS Public Data API V2 Documentation:** [BLS API v2 docs](https://www.bls.gov/developers/api_signature_v2.htm)
 - **BLS Handbook of Methods:** The official handbook for U.S. labor statistics. It provides the exact definitions for the [Establishment Survey (Wages)](https://www.bls.gov/opub/hom/ces/home.htm) and the [Household Survey (Unemployment)](https://www.bls.gov/opub/hom/lau/home.htm).
 - **FRED (Federal Reserve Economic Data):** A tool for [visualizing historical context](https://fred.stlouisfed.org/) and understanding the difference between "Real" (inflation-adjusted) and "Nominal" economic values.
 - **Investopedia – Real Wage vs. Nominal Wage:** A highly accessible breakdown of how [purchasing power](https://www.investopedia.com/terms/r/realwage.asp) is calculated and why it matters for the average worker.

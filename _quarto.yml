@@ -16,7 +16,7 @@ website:
       - text: "Projects"
         menu:
           - text: "All Projects"
-            href: projects/index.md
+            href: projects/index.html
           - text: "---"
           - text: "Exploratory Data Analysis"
             href: projects/eda.qmd
@@ -26,6 +26,9 @@ website:
             href: projects/final-project.qmd
       - text: "Blog"
         menu:
+          - text: "All Blog Posts"
+            href: blog/index.md
+          - text: "---"
           - text: "Tutorial Blog"
             href: blog.md
           - text: "---"
