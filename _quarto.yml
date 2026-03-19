@@ -25,7 +25,12 @@ website:
           - text: "Final Project"
             href: projects/final-project.qmd
       - text: "Blog"
-        href: blog.md
+        menu:
+          - text: "Tutorial Blog"
+            href: blog.md
+          - text: "---"
+          - text: "Data Acquisition"
+            href: dataacquisition_blog.md
     right:
       - icon: github
         href: https://github.com/nraustin
